@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
 </head>
+
 <body>
-  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+  <h2>Update CSS Variables with
+    <span class='highLight'>JS</span>
+  </h2>
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
@@ -21,6 +25,21 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    :root {
+      --base: #ffc500;
+      --spacing: 30px;
+      --blur: 10px;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .highLight{
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -40,12 +59,33 @@
     }
 
     input {
-      width:100px;
+      width: 100px;
     }
   </style>
 
   <script>
+
+    // Updating CSS via JS
+
+    // querySelectorAll returns a list of nodes 
+    const inputs = document.querySelectorAll('.controls input');
+
+    function handleUpdate(){
+
+      // dataset takes everything with a "data-" and put them into a nice object which
+      // we can use 
+      const suffix = this.dataset.sizing || '';
+
+      // the back-ticks `` allows us to use variables' values
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+
+    }
+
+    inputs.forEach(input => input.addEventListener('change', handleUpdate));
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
+    
   </script>
 
 </body>
+
 </html>
