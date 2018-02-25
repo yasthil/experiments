@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+``<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -28,7 +28,43 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const items = JSON.parse(localStorage.getItem('items')) || []; // try to load any items stored in localStorage or create an empty array
+
+  function addItem(e){
+    e.preventDefault(); // prevents the page from refreshing
+    const text = (this.querySelector('[name=item]')).value;
+    const item ={
+      text: text,
+      done: false
+    };
+
+    items.push(item);
+    populateList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items)); // localStorage only stores strings! you JSON.parse to load back stuff stored here
+    // this is the form element
+    this.reset();
+  }
+
+  function populateList(plates = [], platesList){
+
+    // remember this recreates the entire list - not the most optimized
+    platesList.innerHTML = plates.map((plate,i) => {
+      return `
+        <li>
+          <intput type="checkbox" data-index-${i} id="item${i}" ${plate.done ? 'checked' : ''}/>
+          <label for="item{i}">${plate.text} </label>
+        </li>
+      `;
+    }).join(''); // joins up all the strings
+  }
+
+  
+  // use 'submit' instead of 'click
+  // this caters for Enter and button clicked
+  addItems.addEventListener('submit',addItem);
+
+  // on page load, populate our list with stuffs stored in localStorage
+  populateList(items, itemsList);
 
 </script>
 
